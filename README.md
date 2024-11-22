@@ -7,7 +7,7 @@ Extend frappe\'s websocket server using socket.io and redis
 Use frappe bench to add fsocket in your project
 
 ```bash
-$ bench get-app https://github.com/pifabs/fsocket.git
+$ bench get-app https://github.com/onlyshishir/Frappe-Socket.git
 ```
 
 ## Usage

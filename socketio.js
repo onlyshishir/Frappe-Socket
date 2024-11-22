@@ -4,9 +4,12 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
-// const { get_redis_subscriber } = require('../frappe/node_utils');
-// const subscriber = get_redis_subscriber();
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*', // Set to your client URL in production
+        methods: ['GET', 'POST']
+    }
+});
 const { get_fsocket_conf } = require('./node_utils');
 const { fsocketio_port } = get_fsocket_conf();
 
@@ -22,9 +25,9 @@ const subscriber = new Redis({
     port: 6379     // Match this with the port configured for Redis in Docker
 });
 
-// Subscribe to the Redis channelc
+// Subscribe to the Redis channel
 subscriber.subscribe('events');
-console.log('Subscribed to Redis channel: events', subscriber);
+// console.log('Subscribed to Redis channel: events', subscriber);
 
 // Listen to events emitted by frappe.publish_realtime
 subscriber.on('message', function (channel, message) {
@@ -46,18 +49,14 @@ subscriber.on('message', function (channel, message) {
     }
 });
 
-// subscriber.on('subscribe', (channel, count) => {
-//     console.log(`Subscribed successfully to ${channel} channel. Currently subscribed to ${count} channel(s).`);
-// });
-
 // Listen to events emitted by clients
 io.on('connection', function (socket) {
     console.log('A client connected:', socket.id);
 
-	socket.on("joinRoom", (orderId) => {
+    socket.on('joinRoom', (orderId) => {
         socket.join(orderId);
-        console.log(` 🔴 User Joined room ${orderId}`);
-      });
+        console.log(`User joined room: ${orderId}`);
+    });
 
     socket.on('msgprint', function (message) {
         console.log('Message from client:', message);

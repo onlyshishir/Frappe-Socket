@@ -21,7 +21,7 @@ server.listen(fsocketio_port, function () {
 
 const Redis = require('ioredis');
 const subscriber = new Redis({
-    host: 'kenolocalhost-redis-queue',  // Make sure this matches the Redis container name
+    host: 'localhost',  // Make sure this matches the Redis container name
     port: 6379     // Match this with the port configured for Redis in Docker
 });
 
